@@ -14,7 +14,105 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analysis_results: {
+        Row: {
+          created_at: string
+          feedback: Json
+          generated_cover_letter: string | null
+          id: string
+          job_description_id: string | null
+          job_title: string | null
+          match_score: number
+          resume_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback?: Json
+          generated_cover_letter?: string | null
+          id?: string
+          job_description_id?: string | null
+          job_title?: string | null
+          match_score?: number
+          resume_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback?: Json
+          generated_cover_letter?: string | null
+          id?: string
+          job_description_id?: string | null
+          job_title?: string | null
+          match_score?: number
+          resume_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_results_job_description_id_fkey"
+            columns: ["job_description_id"]
+            isOneToOne: false
+            referencedRelation: "job_descriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_results_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "resumes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_descriptions: {
+        Row: {
+          created_at: string
+          description_text: string
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description_text: string
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description_text?: string
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resumes: {
+        Row: {
+          content_text: string
+          created_at: string
+          id: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          content_text: string
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          content_text?: string
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
