@@ -29,10 +29,10 @@ async function extractPdf(file: File): Promise<string> {
   // Dynamic import so pdfjs only loads in the browser when needed.
   const pdfjs = await import("pdfjs-dist");
   // Use the bundled worker via a URL import.
-  // @ts-expect-error - worker import handled by Vite as URL
-  const workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url"))
-    .default;
-  pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+  const workerMod = (await import(
+    /* @vite-ignore */ "pdfjs-dist/build/pdf.worker.min.mjs?url"
+  )) as { default: string };
+  pdfjs.GlobalWorkerOptions.workerSrc = workerMod.default;
 
   const buf = await file.arrayBuffer();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
