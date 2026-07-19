@@ -23,10 +23,10 @@ function AuthenticatedLayout() {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
-          <header className="flex h-14 items-center border-b bg-background px-4">
-            <SidebarTrigger />
+          <header className="flex h-16 items-center border-b bg-background/80 px-6 backdrop-blur-sm">
+            <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
           </header>
-          <main className="flex-1 bg-muted/20">
+          <main className="flex-1 bg-gradient-to-b from-muted/30 via-background to-background">
             <Outlet />
           </main>
         </div>
