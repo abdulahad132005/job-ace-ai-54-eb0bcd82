@@ -16,23 +16,23 @@ function SettingsPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
+    <div className="mx-auto max-w-3xl space-y-8 p-8 md:p-10">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Account and AI service configuration.</p>
+        <h1 className="text-4xl font-bold tracking-tight">Settings</h1>
+        <p className="mt-2 text-muted-foreground">Account and AI service configuration.</p>
       </div>
 
-      <Card>
+      <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
         <CardHeader>
           <CardTitle>Account</CardTitle>
           <CardDescription>You are signed in as:</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="font-mono text-sm">{email || "—"}</p>
+          <p className="rounded-md bg-muted/60 px-3 py-2 font-mono text-sm">{email || "—"}</p>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
