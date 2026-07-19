@@ -35,13 +35,13 @@ function HistoryPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="mx-auto max-w-6xl p-8 md:p-10">
+      <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">History</h1>
-          <p className="text-muted-foreground">Your previous analyses.</p>
+          <h1 className="text-4xl font-bold tracking-tight">History</h1>
+          <p className="mt-2 text-muted-foreground">Your previous analyses.</p>
         </div>
-        <Button asChild>
+        <Button asChild className="rounded-lg shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/30">
           <Link to="/dashboard">New analysis</Link>
         </Button>
       </div>
@@ -51,20 +51,20 @@ function HistoryPage() {
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : !q.data || q.data.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+        <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
+          <CardContent className="flex flex-col items-center gap-4 py-20 text-center">
             <FileText className="h-10 w-10 text-muted-foreground" />
             <p className="text-muted-foreground">No analyses yet.</p>
-            <Button asChild>
+            <Button asChild className="rounded-lg">
               <Link to="/dashboard">Create your first one</Link>
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {q.data.map((row) => (
-            <Card key={row.id}>
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
+            <Card key={row.id} className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50 transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
                 <div className="min-w-0">
                   <CardTitle className="truncate text-lg">
                     {row.job_title || "Untitled role"}
@@ -75,6 +75,7 @@ function HistoryPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge
+                    className="rounded-md px-2.5 py-1 text-xs font-semibold"
                     variant={
                       row.match_score >= 75
                         ? "default"
@@ -88,12 +89,12 @@ function HistoryPage() {
                 </div>
               </CardHeader>
               <CardContent className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="rounded-lg">
                   <Link to="/results/$id" params={{ id: row.id }}>
                     View
                   </Link>
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => remove(row.id)}>
+                <Button variant="ghost" size="sm" onClick={() => remove(row.id)} className="rounded-lg text-muted-foreground hover:text-destructive">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </CardContent>
