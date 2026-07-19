@@ -71,21 +71,21 @@ function DashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">New Analysis</h1>
-        <p className="text-muted-foreground">
+    <div className="mx-auto max-w-6xl p-8 md:p-10">
+      <div className="mb-10">
+        <h1 className="text-4xl font-bold tracking-tight">New Analysis</h1>
+        <p className="mt-2 text-muted-foreground">
           Upload or paste your resume, then paste the job description.
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Your resume</CardTitle>
+      <form onSubmit={onSubmit} className="grid gap-8 md:grid-cols-2">
+        <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Your resume</CardTitle>
             <CardDescription>Upload a .pdf, .docx, or .txt — or paste text.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="resume-title">Title (optional)</Label>
               <Input
@@ -98,7 +98,7 @@ function DashboardPage() {
             <div>
               <Label
                 htmlFor="resume-file"
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed p-4 text-sm hover:bg-muted"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border/70 bg-muted/30 p-6 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground"
               >
                 {parsing ? (
                   <>
@@ -132,12 +132,12 @@ function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Job description</CardTitle>
+        <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Job description</CardTitle>
             <CardDescription>Paste the full job posting.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="job-title">Job title</Label>
               <Input
@@ -161,7 +161,12 @@ function DashboardPage() {
         </Card>
 
         <div className="md:col-span-2 flex justify-end">
-          <Button type="submit" size="lg" disabled={running}>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={running}
+            className="rounded-lg px-8 shadow-sm shadow-primary/20 transition-all hover:shadow-md hover:shadow-primary/30"
+          >
             {running ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing…

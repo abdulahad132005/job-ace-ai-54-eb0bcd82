@@ -73,31 +73,31 @@ function ResultsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-6">
+    <div className="mx-auto max-w-6xl space-y-8 p-8 md:p-10">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" asChild>
+        <Button variant="ghost" asChild className="rounded-lg">
           <Link to="/dashboard">
             <ArrowLeft className="mr-2 h-4 w-4" /> New analysis
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="rounded-lg">
           <Link to="/history">View history</Link>
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
+        <CardHeader className="pb-4">
           <CardTitle className="text-2xl">{row.job_title}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           <div className="flex items-baseline gap-4">
-            <div className={`text-6xl font-bold ${scoreColor}`}>
+            <div className={`text-7xl font-bold tracking-tight ${scoreColor}`}>
               {row.match_score}
             </div>
             <div className="text-muted-foreground">/ 100 match score</div>
           </div>
           <Progress value={row.match_score} className="h-3" />
-          {fb.summary && <p className="text-muted-foreground">{fb.summary}</p>}
+          {fb.summary && <p className="leading-relaxed text-muted-foreground">{fb.summary}</p>}
         </CardContent>
       </Card>
 
@@ -112,12 +112,12 @@ function ResultsPage() {
       </div>
 
       {fb.suggestions && fb.suggestions.length > 0 && (
-        <Card>
+        <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
           <CardHeader>
             <CardTitle>Suggestions to improve your resume</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="list-inside list-decimal space-y-2 text-sm">
+            <ul className="list-inside list-decimal space-y-2 text-sm leading-relaxed">
               {fb.suggestions.map((s, i) => (
                 <li key={i}>{s}</li>
               ))}
@@ -127,19 +127,20 @@ function ResultsPage() {
       )}
 
       {row.generated_cover_letter && (
-        <Card>
+        <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Tailored Cover Letter</CardTitle>
             <Button
               variant="outline"
               size="sm"
+              className="rounded-lg"
               onClick={() => copy(row.generated_cover_letter!)}
             >
               <Copy className="mr-2 h-4 w-4" /> Copy
             </Button>
           </CardHeader>
           <CardContent>
-            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+            <pre className="whitespace-pre-wrap rounded-lg bg-muted/40 p-5 font-sans text-sm leading-relaxed">
               {row.generated_cover_letter}
             </pre>
           </CardContent>
@@ -162,14 +163,14 @@ function ListCard({
   const Icon = icon === "check" ? CheckCircle2 : XCircle;
   const color = icon === "check" ? "text-emerald-600" : "text-red-600";
   return (
-    <Card>
+    <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-2">
+        <ul className="space-y-2.5">
           {items.map((s, i) => (
-            <li key={i} className="flex gap-2 text-sm">
+            <li key={i} className="flex gap-2 text-sm leading-relaxed">
               <Icon className={`mt-0.5 h-4 w-4 flex-shrink-0 ${color}`} />
               <span>{s}</span>
             </li>
@@ -191,7 +192,7 @@ function KeywordCard({
 }) {
   if (!items || items.length === 0) return null;
   return (
-    <Card>
+    <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
       <CardHeader>
         <CardTitle className="text-base">{title}</CardTitle>
       </CardHeader>
@@ -200,6 +201,7 @@ function KeywordCard({
           {items.map((k, i) => (
             <Badge
               key={i}
+              className="rounded-md px-2.5 py-1"
               variant={variant === "matched" ? "default" : "destructive"}
             >
               {k}
