@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Loader2, ArrowLeft, Copy, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, ArrowLeft, Copy, Download, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/results/$id")({
@@ -72,6 +72,20 @@ function ResultsPage() {
     toast.success("Copied to clipboard");
   };
 
+  const download = (text: string) => {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safeTitle = (row.job_title || "cover-letter").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+    a.href = url;
+    a.download = `${safeTitle}-cover-letter.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Download started");
+  };
+
   return (
     <div className="mx-auto max-w-6xl space-y-8 p-8 md:p-10">
       <div className="flex items-center justify-between">
@@ -128,16 +142,26 @@ function ResultsPage() {
 
       {row.generated_cover_letter && (
         <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
             <CardTitle>Tailored Cover Letter</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-lg"
-              onClick={() => copy(row.generated_cover_letter!)}
-            >
-              <Copy className="mr-2 h-4 w-4" /> Copy
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg"
+                onClick={() => copy(row.generated_cover_letter!)}
+              >
+                <Copy className="mr-2 h-4 w-4" /> Copy
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg"
+                onClick={() => download(row.generated_cover_letter!)}
+              >
+                <Download className="mr-2 h-4 w-4" /> Download .txt
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <pre className="whitespace-pre-wrap rounded-lg bg-muted/40 p-5 font-sans text-sm leading-relaxed">

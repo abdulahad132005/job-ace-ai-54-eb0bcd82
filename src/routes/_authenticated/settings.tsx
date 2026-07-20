@@ -2,7 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Settings — TailorAI" }] }),
@@ -11,24 +15,87 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const [email, setEmail] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+    supabase.auth.getUser().then(({ data }) => {
+      setEmail(data.user?.email ?? "");
+      const meta = (data.user?.user_metadata ?? {}) as { display_name?: string; full_name?: string; name?: string };
+      setDisplayName(meta.display_name ?? meta.full_name ?? meta.name ?? "");
+    });
   }, []);
 
+  const onSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const updates: { email?: string; data?: Record<string, unknown> } = {
+        data: { display_name: displayName },
+      };
+      const { data: current } = await supabase.auth.getUser();
+      if (email && email !== current.user?.email) updates.email = email;
+      const { error } = await supabase.auth.updateUser(updates);
+      if (error) throw error;
+      toast.success(
+        updates.email
+          ? "Profile updated — check your inbox to confirm the new email."
+          : "Profile updated",
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-3xl space-y-8 p-8 md:p-10">
+    <div className="mx-auto max-w-3xl space-y-8 p-4 sm:p-8 md:p-10">
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Settings</h1>
         <p className="mt-2 text-muted-foreground">Account and AI service configuration.</p>
       </div>
 
       <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
         <CardHeader>
-          <CardTitle>Account</CardTitle>
-          <CardDescription>You are signed in as:</CardDescription>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>Update your display name and email.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="rounded-md bg-muted/60 px-3 py-2 font-mono text-sm">{email || "—"}</p>
+          <form onSubmit={onSave} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="display-name">Display name</Label>
+              <Input
+                id="display-name"
+                placeholder="Jane Doe"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Changing your email requires confirmation via a link sent to the new address.
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Button type="submit" disabled={saving} className="rounded-lg">
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…
+                  </>
+                ) : (
+                  "Save changes"
+                )}
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
 
