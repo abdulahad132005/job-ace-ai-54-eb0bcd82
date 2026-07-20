@@ -1,3 +1,11 @@
+
+/* Hide external branding/watermarks for standalone product feel */
+#lovable-badge,
+[data-lovable-badge],
+a[href*="lovable.dev"][class*="badge" i],
+a[href*="lovable.app"][class*="badge" i] {
+  display: none !important;
+}
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";

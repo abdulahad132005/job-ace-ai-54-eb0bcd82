@@ -2,7 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle2, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CheckCircle2, Info, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Settings — TailorAI" }] }),
@@ -10,10 +14,49 @@ export const Route = createFileRoute("/_authenticated/settings")({
 });
 
 function SettingsPage() {
+  const [initialEmail, setInitialEmail] = useState<string>("");
+  const [initialName, setInitialName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+    supabase.auth.getUser().then(({ data }) => {
+      const u = data.user;
+      const e = u?.email ?? "";
+      const n = (u?.user_metadata?.full_name as string | undefined) ?? "";
+      setEmail(e);
+      setName(n);
+      setInitialEmail(e);
+      setInitialName(n);
+    });
   }, []);
+
+  const dirty = email !== initialEmail || name !== initialName;
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!dirty) return;
+    setSaving(true);
+    try {
+      const payload: { email?: string; data?: Record<string, unknown> } = {};
+      if (name !== initialName) payload.data = { full_name: name };
+      if (email !== initialEmail) payload.email = email;
+      const { error } = await supabase.auth.updateUser(payload);
+      if (error) throw error;
+      setInitialName(name);
+      if (email !== initialEmail) {
+        toast.success("Confirmation email sent to update your address");
+      } else {
+        toast.success("Profile saved");
+      }
+      setInitialEmail(email);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-3xl space-y-8 p-8 md:p-10">
@@ -24,11 +67,42 @@ function SettingsPage() {
 
       <Card className="rounded-xl border-border/60 shadow-sm shadow-slate-200/50">
         <CardHeader>
-          <CardTitle>Account</CardTitle>
-          <CardDescription>You are signed in as:</CardDescription>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>Update your name and email address.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="rounded-md bg-muted/60 px-3 py-2 font-mono text-sm">{email || "—"}</p>
+          <form onSubmit={save} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Jane Doe"
+                className="rounded-lg"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="rounded-lg"
+              />
+              <p className="text-xs text-muted-foreground">
+                Changing your email requires confirmation from a link sent to the new address.
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Button type="submit" disabled={!dirty || saving} className="rounded-lg">
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save changes
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
 
