@@ -28,11 +28,8 @@ export async function extractTextFromFile(file: File): Promise<string> {
 async function extractPdf(file: File): Promise<string> {
   // Dynamic import so pdfjs only loads in the browser when needed.
   const pdfjs = await import("pdfjs-dist");
-  // Use the bundled worker via a URL import.
-  const workerMod = (await import(
-    /* @vite-ignore */ "pdfjs-dist/build/pdf.worker.min.mjs?url"
-  )) as { default: string };
-  pdfjs.GlobalWorkerOptions.workerSrc = workerMod.default;
+  // Load the worker from a CDN so it works in production builds without bundler-specific URL imports.
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
   const buf = await file.arrayBuffer();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
