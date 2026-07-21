@@ -89,10 +89,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Match your resume to any job with AI. Score, gaps, and a tailored cover letter in seconds.",
+          "Match your resume to any job description with AI. Get an ATS-style match score, keyword gaps, and a tailored cover letter in seconds.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "TailorAI — AI Resume & Cover Letter Tailor" },
+      { name: "twitter:description", content: "Match your resume to any job description with AI. Get an ATS-style match score, keyword gaps, and a tailored cover letter in seconds." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e8fc16c-0401-4c55-bb84-d2625a35f94d/id-preview-fefadcdd--426f1274-a125-4ad0-b95e-68068cca8450.lovable.app-1784655541576.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4e8fc16c-0401-4c55-bb84-d2625a35f94d/id-preview-fefadcdd--426f1274-a125-4ad0-b95e-68068cca8450.lovable.app-1784655541576.png" },
     ],
     links: [
       {
